@@ -1,3 +1,11 @@
+include(CMakeParseArguments)
+
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS "-std=c++11 -DEIGEN_DONT_PARALLELIZE")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
+
+find_package(OpenCV REQUIRED)
+
 get_filename_component(TEST_DATA_DIR "data" ABSOLUTE)
 configure_file(test.h.in test.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
