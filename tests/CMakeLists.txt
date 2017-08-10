@@ -5,9 +5,19 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -DEIGEN_DONT_PARALLELIZE")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 
 find_package(OpenCV REQUIRED)
+find_package(Boost REQUIRED)
+#include(/usr/share/cmake-2.8/Modules/FindBoost.cmake)
+# can find boost, same as last line
+
+if(Boost_FOUND)
+    message("Found Boost!!!")
+endif()
+
+message("1. link with: ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
+message("1. boost lib: ${Boost_LIBRARIES}")
 
 get_filename_component(TEST_DATA_DIR "data" ABSOLUTE)
-configure_file(test.h.in test.h)
+#configure_file(test.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(tests "${CMAKE_CTEST_COMMAND}" "-V" VERBATIM)
@@ -25,9 +35,14 @@ macro(TEST_ADD _name)
   if(LIB_TYPE STREQUAL SHARED)
     target_compile_definitions(${_executable} PRIVATE "-DBOOST_TEST_DYN_LINK")
   endif()
+
+message("link with: ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
+message("boost lib: ${Boost_LIBRARIES}")
+
   target_link_libraries(${_executable}
     ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     ${TEST_ADD_LINK_WITH}
+    opencv_core
   )
   add_test(NAME ${_name} COMMAND ${_executable})
   add_dependencies(tests ${_executable})
